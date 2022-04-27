@@ -1,13 +1,16 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, DataSource } from "typeorm";
 import * as express from "express";
 import * as cors from 'cors'
 import * as session from 'express-session'
 import * as fs from 'fs';
 import * as https from 'https';
 import authRouter from './route/authRouter'
-import axios from 'axios'
-createConnection().then(async connection => {
+import postRouter from './route/authRouter'
+import { appDataSource } from "./dataSource";
+import { User } from "./entity/User";
+
+appDataSource.initialize().then(async connection => {
     const key = fs.readFileSync('./key.pem', 'utf8');
     const cert = fs.readFileSync('./cert.pem', 'utf8');
     // create express app
@@ -31,18 +34,22 @@ createConnection().then(async connection => {
     }))
     app.use('/auth', authRouter)
     app.use((request, response, next) => {
-        const user = (request.session as any).user;
-        if (!user) {
-            response.sendStatus(401);
+        const user = (request.session as any).user as User | undefined;
+        if (!user || user.blocked) {
+            response.status(401).json({ error: 'Unauthorized' })
             return;
         }
         next();
     });
-
+    app.use('/post', postRouter);
+    app.use('/img', express.static('img', {
+        extensions: ['png']
+    }))
     const server = https.createServer({
         key: key,
         cert: cert,
     }, app)
+
     server.listen(8000, () => {
         console.log('Server is listening')
     })

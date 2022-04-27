@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { EncryptionTransformer } from 'typeorm-encrypted';
 import { Post } from "./Post";
 @Entity()
@@ -30,6 +30,7 @@ export class User {
     @Column({ default: false })
     admin: boolean;
 
+    @Column({ default: false })
     blocked: boolean;
 
     @Column({ nullable: true })

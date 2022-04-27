@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "./Comment";
 import { PostCategory } from "./PostCategory";
 import { User } from "./User";
@@ -12,13 +12,21 @@ export class Post {
   @Column()
   title: string;
 
+  @Column()
+  postCategoryId: number;
+
+  @Column()
+  userId: number;
+
   @Column({ type: 'text' })
   content: string;
 
   @ManyToOne(() => User, u => u.posts)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @ManyToOne(() => PostCategory)
+  @JoinColumn({ name: 'postCategoryId' })
   postCategory: PostCategory;
 
   @OneToMany(() => Comment, c => c.post)

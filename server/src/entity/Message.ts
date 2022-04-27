@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
 @Entity()
@@ -8,6 +8,9 @@ export class Message {
 
   @Column()
   content: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   senderId: number;
