@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
     }
     const user = await userRepository.save({
       ...req.body,
-      imageUrl,
+      imageUrl: 'https://localhost:8000' + imageUrl,
       admin: false,
       blocked: false
     });
