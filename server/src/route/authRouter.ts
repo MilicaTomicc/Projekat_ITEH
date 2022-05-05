@@ -2,9 +2,9 @@ import axios from "axios";
 import { Router } from "express";
 import { appDataSource } from "../dataSource";
 import { User } from "../entity/User";
-import * as https from 'https'
 import { v4 } from 'uuid'
 import * as fs from 'fs'
+import path = require("path");
 const router = Router();
 
 
@@ -37,14 +37,25 @@ router.post('/register', async (req, res) => {
   try {
     let imageUrl = req.body.imageUrl;
     if (!imageUrl) {
-      https.get(`https://eu.ui-avatars.com/api/?background=random&name=${req.body.firstName}+${req.body.lastName}`, (res) => {
-        imageUrl = '/img/' + v4();
-        res.pipe(fs.createWriteStream('../..' + imageUrl))
+      // https.get(`https://eu.ui-avatars.com/api/?background=random&name=${req.body.firstName}+${req.body.lastName}`, (res) => {
+      //   imageUrl = '/img/' + v4();
+      //   res.pipe(fs.createWriteStream('../..' + imageUrl))
+      //   imageUrl = 'https://localhost:8000' + imageUrl;
+      // }).on('error', e => { console.log({ e }) })
+      const res = await axios({
+        method: 'GET',
+        url: `https://eu.ui-avatars.com/api/?background=random&name=${req.body.firstName}+${req.body.lastName}`,
+        responseType: 'stream', // important
       })
+      imageUrl = '/img/' + v4() + '.png';
+      console.log(path.join(__dirname, '../..', imageUrl));
+      const writter = fs.createWriteStream(path.join(__dirname, '../..', imageUrl))
+      res.data.pipe(writter);
+      imageUrl = 'https://localhost:8000' + imageUrl;
     }
     const user = await userRepository.save({
       ...req.body,
-      imageUrl: 'https://localhost:8000' + imageUrl,
+      imageUrl,
       admin: false,
       blocked: false
     });
@@ -58,6 +69,14 @@ router.post('/register', async (req, res) => {
   } catch (error) {
     res.status(400).send('User already exists');
   }
+})
+router.get('/check', async (req, res) => {
+  const user = (req.session as any).user;
+  if (!user) {
+    res.sendStatus(401);
+    return;
+  }
+  res.json(user)
 })
 
 export default router;

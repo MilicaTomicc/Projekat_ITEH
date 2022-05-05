@@ -40,3 +40,15 @@ export interface User {
   imageUrl?: string,
   posts?: Post[]
 }
+
+export interface LoginUser {
+  email: string,
+  password: string
+}
+export interface RegisterUser {
+  firstName: string,
+  lastName: string,
+  email: string,
+  imageUrl?: string,
+  password: string
+}

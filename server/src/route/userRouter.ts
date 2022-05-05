@@ -13,10 +13,6 @@ router.post('/logout', async (req, res) => {
   });
   res.sendStatus(204);
 })
-router.post('/check', async (req, res) => {
-  const user = (req.session as any).user;
-  res.json(user)
-})
 
 
 export default router;

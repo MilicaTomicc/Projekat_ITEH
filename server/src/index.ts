@@ -6,9 +6,15 @@ import * as session from 'express-session'
 import * as fs from 'fs';
 import * as https from 'https';
 import authRouter from './route/authRouter'
-import postRouter from './route/authRouter'
+import postRouter from './route/postRouter'
+import postCategoryRouter from './route/postCategoryRouter'
+import adminRouter from './route/adminRouter'
+import messageRouter from './route/messageRouter'
+import userRouter from './route/userRouter'
 import { appDataSource } from "./dataSource";
 import { User } from "./entity/User";
+import { renameFile, uplaodMiddleware } from "./upload";
+
 
 appDataSource.initialize().then(async connection => {
     const key = fs.readFileSync('./key.pem', 'utf8');
@@ -32,6 +38,14 @@ appDataSource.initialize().then(async connection => {
             secure: true
         }
     }))
+    app.post('/upload', uplaodMiddleware, renameFile('img'), (req, res) => {
+        res.json({
+            fileUrl: (req as any).fileUrl
+        })
+    })
+    app.use('/img', express.static('img', {
+        extensions: ['png', 'jpg', 'jpeg']
+    }))
     app.use('/auth', authRouter)
     app.use((request, response, next) => {
         const user = (request.session as any).user as User | undefined;
@@ -41,10 +55,13 @@ appDataSource.initialize().then(async connection => {
         }
         next();
     });
+
     app.use('/post', postRouter);
-    app.use('/img', express.static('img', {
-        extensions: ['png']
-    }))
+    app.use('/post-category', postCategoryRouter);
+    app.use('/message', messageRouter);
+    app.use('/user', userRouter);
+    app.use('/admin', adminRouter);
+
     const server = https.createServer({
         key: key,
         cert: cert,
