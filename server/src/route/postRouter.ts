@@ -16,6 +16,9 @@ router.get('/', async (_req, res) => {
       },
       postCategory: true,
       user: true
+    },
+    order: {
+      id: 'DESC'
     }
   }))
 })

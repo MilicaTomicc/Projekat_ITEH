@@ -1,6 +1,71 @@
-.pt{
-  padding-top: 50px;
+.container{
+  background-color: #F0F3F9;
+  padding: 0 15%;
+  height: 93vh;
+  font-size: 16px;
 }
 .fluid{
   width: 100%;
+}
+
+.content{
+  background-color: white;
+  padding: 20px 30px;
+  height: 100%;
+}
+.post-card{
+  border-radius: 8px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 10px 25px;
+  border: 1px solid rgba(20, 32, 65, 0.15);
+  margin-bottom: 20px;
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  background-image: url("/public/logo192.png");
+  background-size: cover;
+  margin: 150px auto;
+}
+.flex{
+  display: flex;
+}
+
+.post-modal-trigger{
+  margin-bottom: 10px;
+  border-radius: 20px;
+  padding: 10px 15px;
+  color: #65676B;
+  background-color: #F0F2F5 !important;
+  cursor: pointer;
+}
+.post-modal-trigger:hover{
+  background-color: #BCC0C4;
+}
+.hover-text{
+  color: #65676B;
+  border-bottom: 1px solid rgba(20, 32, 65, 0.15);
+  cursor: pointer;
+  padding: 5px;
+}
+.hover-text:hover{
+  background-color: #F0F2F5;
+}
+.bb{
+  border-bottom: 1px solid rgba(20, 32, 65, 0.15);
+}
+.comment-input{
+  padding-left:40px;
+}
+.comment-input>input{
+  margin: 10px 0;
+  border-radius: 20px;
+  padding: 10px 15px;
+  color: #65676B;
+  background-color: #F0F2F5 !important;
 }

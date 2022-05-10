@@ -19,7 +19,7 @@ export interface Message {
 
 export interface Post {
   id?: number,
-  title: string,
+  createdAt: string,
   postCategoryId: number,
   userId: number,
   content: string,

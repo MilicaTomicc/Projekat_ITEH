@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "./Comment";
 import { PostCategory } from "./PostCategory";
 import { User } from "./User";
@@ -9,8 +9,8 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   postCategoryId: number;

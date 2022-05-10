@@ -15,12 +15,15 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!loading || !!user) {
+      return;
+    }
     axios.get('/auth/check').then(res => {
       setUser(res.data);
     }).finally(() => {
       setLoading(false);
     })
-  }, [])
+  }, [loading, user])
 
   const login = async (u: Partial<LoginUser>) => {
     const res = await axios.post('/auth/login', u);
