@@ -33,7 +33,7 @@ export default function HomePage() {
       <div>
         <div
           onClick={() => setOpenModal(true)}
-          className='post-modal-trigger'>
+          className='post-modal-trigger pointer'>
           Whats on your mind...
         </div>
       </div>
@@ -41,6 +41,28 @@ export default function HomePage() {
         posts.map(post => {
           return (
             <PostCard
+              onDelete={async () => {
+                await axios.delete('/post/' + post.id);
+                setPosts(prev => (prev || []).filter(p => p !== post));
+              }
+              }
+              onRemoveComment={async id => {
+                await axios.delete(`/post/${post.id}/comment/` + id);
+                setPosts(prev => {
+                  if (!prev) {
+                    return [];
+                  }
+                  return prev.map(element => {
+                    if (element === post) {
+                      return {
+                        ...post,
+                        comments: (element.comments || []).filter(c => c.id !== id)
+                      }
+                    }
+                    return element;
+                  })
+                })
+              }}
               onComment={async text => {
                 const res = await axios.post(`/post/${post.id}/comment`, { content: text });
                 setPosts(prev => {

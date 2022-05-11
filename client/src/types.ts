@@ -36,6 +36,7 @@ export interface User {
   firstName: string,
   lastName: string,
   email: string,
+  blocked: boolean,
   admin: boolean,
   imageUrl?: string,
   posts?: Post[]
@@ -51,4 +52,21 @@ export interface RegisterUser {
   email: string,
   imageUrl?: string,
   password: string
+}
+
+export interface Page<T> {
+  content: T[],
+  totalElements: number,
+  size: number,
+  page: number
+}
+export interface MonthlyStatistics {
+  month: number,
+  year: number,
+  value: number
+}
+
+export interface HourlyStatistics {
+  hour: number,
+  value: number
 }

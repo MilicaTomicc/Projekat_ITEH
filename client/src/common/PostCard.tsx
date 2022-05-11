@@ -1,23 +1,54 @@
-import React, { useState } from 'react'
-import { Form, Input, Schema } from 'rsuite';
-import { Post } from '../types'
-import UserAvatar from './UserAvatar'
-
+import React, { useState } from 'react';
+import { Form, IconButton, Schema } from 'rsuite';
+import { useAppContext } from '../hooks/useAppContext';
+import { Post } from '../types';
+import UserAvatar from './UserAvatar';
+import TrashIcon from '@rsuite/icons/Trash';
+import moment from 'moment';
+import MessageIcon from '@rsuite/icons/Message';
+import { Link } from 'react-router-dom';
 interface Props {
   post: Post,
-  onComment: (text: string) => Promise<void>
+  fluid?: boolean,
+  onComment: (text: string) => Promise<void>,
+  onDelete: () => void,
+  onRemoveComment: (id?: number) => Promise<void>
 }
 const model = Schema.Model({
   content: Schema.Types.StringType().isRequired('Please enter a comment')
 })
+
 export default function PostCard(props: Props) {
   const [openComments, setOpenComments] = useState(false);
   const [formValue, setFormValue] = useState({ content: '' });
+  const loginUser = useAppContext().user;
   return (
-    <div className='post-card'>
-      <UserAvatar user={props.post.user} />
+    <div className={'post-card' + (props.fluid ? ' fluid' : '')}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-end' }}>
+        <div>
+          <UserAvatar user={props.post.user} />
+        </div>
+        {
+          loginUser?.id !== props.post.user?.id ? (
+            <div>
+              <Link to={`/chat/${props.post?.user?.id}`} target='_blank' >
+                <IconButton appearance='primary' icon={<MessageIcon />} />
+              </Link>
+            </div>
+          ) : (
+            <IconButton
+              onClick={() => {
+                props.onDelete();
+              }}
+              style={{ color: 'white', backgroundColor: 'red' }} icon={<TrashIcon />} />
+          )
+        }
+      </div>
       <div>
         Category: {props.post.postCategory?.value}
+      </div>
+      <div>
+        Created: {moment(props.post.createdAt).format('HH:mm DD.MM.YYYY')}
       </div>
       <div>
       </div>
@@ -36,7 +67,22 @@ export default function PostCard(props: Props) {
                   <div >
                     <UserAvatar size='sm' user={c.user} />
                     <div className='bb' style={{ paddingLeft: '40px', paddingBottom: '10px' }}>
-                      {c.content}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          {c.content}
+                        </div>
+                        {
+                          (c.userId === loginUser?.id || props.post.userId === loginUser?.id) && (
+                            <div>
+                              <IconButton
+                                onClick={() => {
+                                  props.onRemoveComment(c.id);
+                                }}
+                                style={{ color: 'white', backgroundColor: 'red' }} icon={<TrashIcon />} />
+                            </div>
+                          )
+                        }
+                      </div>
                     </div>
                   </div>
                 )

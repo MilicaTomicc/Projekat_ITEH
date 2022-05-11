@@ -21,21 +21,6 @@ router.get('/:otherId', async (req, res) => {
   })
   res.json(messages);
 })
-
-router.get('/:otherId', async (req, res) => {
-  const user = (req.session as any).user as User;
-  const otherId = Number(req.params.otherId);
-  const messages = await appDataSource.getRepository(Message).find({
-    where: [
-      { receiverId: user.id, senderId: otherId },
-      { receiverId: otherId, senderId: user.id },
-    ],
-    order: {
-      createdAt: 'ASC'
-    }
-  })
-  res.json(messages);
-})
 router.post('/:otherId', async (req, res) => {
   const user = (req.session as any).user as User;
   const otherId = Number(req.params.otherId);

@@ -49,6 +49,7 @@ router.delete('/:postId/comment/:id', accessMiddleware(Comment, c => c.userId), 
     id: Number(id),
     postId: Number(req.params.postId)
   })
+  res.sendStatus(204);
 })
 
 router.use('/:id', accessMiddleware(Post, p => p.userId))

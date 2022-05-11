@@ -1,15 +1,18 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Container, FlexboxGrid } from 'rsuite';
+import AdminApp from './admin/AdminApp';
 import './App.css';
 import Login from './auth/Login';
 import Register from './auth/Register';
+import { AppContext } from './hooks/useAppContext';
 import logo from './logo.svg';
 import { LoginUser, RegisterUser, User } from './types';
-import { Container, FlexboxGrid } from 'rsuite'
-import axios from 'axios'
 import UserApp from './user/UserApp';
 axios.defaults.baseURL = 'https://localhost:8000';
 axios.defaults.withCredentials = true;
+
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [loading, setLoading] = useState(true)
@@ -65,29 +68,18 @@ function App() {
     )
   }
 
-  if (!user.admin) {
+  if (user.admin) {
     return (
-      <UserApp user={user} onLogout={logout} />
+      <AppContext.Provider value={{ user, setUser }}>
+        <AdminApp user={user} onLogout={logout} />
+      </AppContext.Provider>
     )
   }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <AppContext.Provider value={{ user, setUser }}>
+      <UserApp user={user} onLogout={logout} />
+    </AppContext.Provider>
+  )
 }
 
 export default App;
